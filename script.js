@@ -1,102 +1,128 @@
+// CHANGE PAGES
+function showPage(number) {
+    const pages = document.querySelectorAll(".page");
 
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const message = document.getElementById("message");
-
-let noClicks = 0;
-
-const messages = [
-    "Wrong answer, pretty girl! 😾",
-    "Are you REALLY sure? 🥺",
-    "The NO button is getting tiny!",
-    "Your YES button is waiting... 💙",
-    "NO HAS LEFT THE CHAT. 😭"
-];
-
-// Question buttons
-noBtn.addEventListener("click", function () {
-    noClicks++;
-
-    const noScale = Math.max(0, 1 - noClicks * 0.2);
-    const yesScale = 1 + noClicks * 0.22;
-
-    noBtn.style.transform = `scale(${noScale})`;
-    yesBtn.style.transform = `scale(${yesScale})`;
-
-    message.textContent =
-        messages[Math.min(noClicks - 1, messages.length - 1)];
-
-    if (noClicks >= 5) {
-        noBtn.style.display = "none";
-    }
-});
-
-// Move to the next slide
-function showSlide(number) {
-    document.querySelectorAll(".slide").forEach(function (slide) {
-        slide.classList.remove("active");
+    pages.forEach(function(page) {
+        page.classList.remove("active");
     });
 
-    document.getElementById("slide" + number).classList.add("active");
+    document.getElementById("page" + number)
+        .classList.add("active");
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
+    // Hearts when opening a new page!
+    if (number === 2 || number === 4) {
+        makeItRain();
+    }
 }
 
-// YES takes her to the cars slide
-yesBtn.addEventListener("click", function () {
-    showSlide(2);
-});
 
-// Navigation buttons
-document.querySelectorAll(".next-btn").forEach(function (button) {
-    button.addEventListener("click", function () {
-        const nextNumber = Number(button.dataset.next);
+// BEAUTY TEST
+function checkRating() {
+    const ratingInput = document.getElementById("rating");
+    const message = document.getElementById("ratingMessage");
 
-        if (nextNumber) {
-            showSlide(nextNumber);
-        }
-    });
-});
+    const rating = Number(ratingInput.value);
 
-// Play again
-document.getElementById("restartBtn").addEventListener("click", function () {
-    noClicks = 0;
+    // Check if the number is valid
+    if (
+        ratingInput.value.trim() === "" ||
+        !Number.isInteger(rating) ||
+        rating < 1 ||
+        rating > 10
+    ) {
+        message.textContent = "ENTER A NUMBER FROM 1 TO 10!";
+        message.className = "wrong";
+        return;
+    }
 
-    noBtn.style.display = "";
-    noBtn.style.transform = "scale(1)";
-    yesBtn.style.transform = "scale(1)";
-    message.textContent = "";
+    // Any number below 10 is WRONG!
+    if (rating < 10) {
+        message.textContent = "NO WRONG ANSWERE 😡💗";
+        message.className = "wrong";
 
-    showSlide(1);
-});
+        ratingInput.value = "";
 
-// Falling cherry blossom petals
-const petalsContainer = document.getElementById("petals");
-const petalSymbols = ["✿", "✧", "♡", "❀"];
+        return;
+    }
 
-function createPetal() {
-    const petal = document.createElement("span");
+    // THE CORRECT ANSWER!
+    message.textContent =
+        "CORRECTTTTTTTT!! YOU'RE VERY BEAUTIFULL MY QUEEN!! 💗";
 
-    petal.className = "petal";
-    petal.textContent =
-        petalSymbols[Math.floor(Math.random() * petalSymbols.length)];
+    message.className = "correct";
 
-    petal.style.left = Math.random() * 100 + "%";
-    petal.style.fontSize = (10 + Math.random() * 14) + "px";
-    petal.style.animationDuration = (6 + Math.random() * 7) + "s";
+    // Wait a little, then show the compliments
+    setTimeout(function() {
+        showPage(2);
+    }, 2200);
 
-    petalsContainer.appendChild(petal);
-
-    petal.addEventListener("animationend", function () {
-        petal.remove();
-    });
+    makeItRain();
 }
 
-for (let i = 0; i < 12; i++) {
-    setTimeout(createPetal, i * 350);
+
+// FLOATING HEARTS
+function makeItRain() {
+    const hearts = ["♥", "♡", "💗", "💖", "🌸", "✿"];
+
+    for (let i = 0; i < 20; i++) {
+        const heart = document.createElement("span");
+
+        heart.className = "floating-heart";
+
+        heart.textContent =
+            hearts[Math.floor(Math.random() * hearts.length)];
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.bottom = "-30px";
+
+        heart.style.animationDelay =
+            Math.random() * 1.5 + "s";
+
+        document.body.appendChild(heart);
+
+        // Remove each heart after its animation
+        setTimeout(function() {
+            heart.remove();
+        }, 4500);
+    }
 }
 
-setInterval(createPetal, 650);
+
+// FINAL PAGE SURPRISE
+function makeItRainAgain() {
+    makeItRain();
+}
+
+function makeItRain() {
+    const hearts = ["♥", "♡", "💗", "💖", "🌸", "✿"];
+
+    for (let i = 0; i < 20; i++) {
+        const heart = document.createElement("span");
+
+        heart.className = "floating-heart";
+        heart.textContent =
+            hearts[Math.floor(Math.random() * hearts.length)];
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.bottom = "-30px";
+        heart.style.animationDelay =
+            Math.random() * 1.5 + "s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(function() {
+            heart.remove();
+        }, 4500);
+    }
+}
+
+document.querySelector("input").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        checkRating();
+    }
+});
